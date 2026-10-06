@@ -173,12 +173,12 @@ public class AuthServiceImpl implements AuthService {
                         new IllegalStateException(
                                 "INDIVIDUAL customer type not found"));
 
-        // Get ACTIVE customer status
+        // Get KYC PENDING customer status
         CustStsMstr customerStatus = custStsMstrRepository
-                .findByStatusCode("ACTIVE")
+                .findByStatusCode("KYC_PENDING")
                 .orElseThrow(() ->
                         new IllegalStateException(
-                                "ACTIVE customer status not found"));
+                                "KYC_PENDING customer status not found"));
 
         /*
          * Create audit data
