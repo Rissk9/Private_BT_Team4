@@ -1,8 +1,8 @@
 package com.example.auth.entity;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "cust_cl")
@@ -18,9 +18,6 @@ public class CustCl {
 
     @Column(name = "CSTCL_TYP_VALUE", length = 100, nullable = false)
     private String classificationTypeValue;
-
-    @Column(name = "CSTCL_EFCTV_DT")
-    private LocalDate effectiveDate;
 
     @Column(name = "CSTCL_CRUD_VALUE", length = 1)
     private String crudValue;
@@ -49,113 +46,101 @@ public class CustCl {
     @Column(name = "CSTCL_UUID", length = 100)
     private String uuid;
 
-    //getters and setters
-	public Long getClassificationId() {
-		return classificationId;
-	}
+    // Getters and Setters
 
-	public void setClassificationId(Long classificationId) {
-		this.classificationId = classificationId;
-	}
+    public Long getClassificationId() {
+        return classificationId;
+    }
 
-	public String getClassificationType() {
-		return classificationType;
-	}
+    public void setClassificationId(Long classificationId) {
+        this.classificationId = classificationId;
+    }
 
-	public void setClassificationType(String classificationType) {
-		this.classificationType = classificationType;
-	}
+    public String getClassificationType() {
+        return classificationType;
+    }
 
-	public String getClassificationTypeValue() {
-		return classificationTypeValue;
-	}
+    public void setClassificationType(String classificationType) {
+        this.classificationType = classificationType;
+    }
 
-	public void setClassificationTypeValue(String classificationTypeValue) {
-		this.classificationTypeValue = classificationTypeValue;
-	}
+    public String getClassificationTypeValue() {
+        return classificationTypeValue;
+    }
 
-	public LocalDate getEffectiveDate() {
-		return effectiveDate;
-	}
+    public void setClassificationTypeValue(String classificationTypeValue) {
+        this.classificationTypeValue = classificationTypeValue;
+    }
 
-	public void setEffectiveDate(LocalDate effectiveDate) {
-		this.effectiveDate = effectiveDate;
-	}
+    public String getCrudValue() {
+        return crudValue;
+    }
 
-	public String getCrudValue() {
-		return crudValue;
-	}
+    public void setCrudValue(String crudValue) {
+        this.crudValue = crudValue;
+    }
 
-	public void setCrudValue(String crudValue) {
-		this.crudValue = crudValue;
-	}
+    public String getUserId() {
+        return userId;
+    }
 
-	public String getUserId() {
-		return userId;
-	}
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public String getWorkstationId() {
+        return workstationId;
+    }
 
-	public String getWorkstationId() {
-		return workstationId;
-	}
+    public void setWorkstationId(String workstationId) {
+        this.workstationId = workstationId;
+    }
 
-	public void setWorkstationId(String workstationId) {
-		this.workstationId = workstationId;
-	}
+    public String getProgramId() {
+        return programId;
+    }
 
-	public String getProgramId() {
-		return programId;
-	}
+    public void setProgramId(String programId) {
+        this.programId = programId;
+    }
 
-	public void setProgramId(String programId) {
-		this.programId = programId;
-	}
+    public LocalDateTime getHostTimestamp() {
+        return hostTimestamp;
+    }
 
-	public LocalDateTime getHostTimestamp() {
-		return hostTimestamp;
-	}
+    public void setHostTimestamp(LocalDateTime hostTimestamp) {
+        this.hostTimestamp = hostTimestamp;
+    }
 
-	public void setHostTimestamp(LocalDateTime hostTimestamp) {
-		this.hostTimestamp = hostTimestamp;
-	}
+    public LocalDateTime getLocalTimestamp() {
+        return localTimestamp;
+    }
 
-	public LocalDateTime getLocalTimestamp() {
-		return localTimestamp;
-	}
+    public void setLocalTimestamp(LocalDateTime localTimestamp) {
+        this.localTimestamp = localTimestamp;
+    }
 
-	public void setLocalTimestamp(LocalDateTime localTimestamp) {
-		this.localTimestamp = localTimestamp;
-	}
+    public LocalDateTime getAcceptanceTimestamp() {
+        return acceptanceTimestamp;
+    }
 
-	public LocalDateTime getAcceptanceTimestamp() {
-		return acceptanceTimestamp;
-	}
+    public void setAcceptanceTimestamp(LocalDateTime acceptanceTimestamp) {
+        this.acceptanceTimestamp = acceptanceTimestamp;
+    }
 
-	public void setAcceptanceTimestamp(LocalDateTime acceptanceTimestamp) {
-		this.acceptanceTimestamp = acceptanceTimestamp;
-	}
+    public LocalDateTime getAcceptanceTimestampUtcOffset() {
+        return acceptanceTimestampUtcOffset;
+    }
 
-	public LocalDateTime getAcceptanceTimestampUtcOffset() {
-		return acceptanceTimestampUtcOffset;
-	}
+    public void setAcceptanceTimestampUtcOffset(LocalDateTime acceptanceTimestampUtcOffset) {
+        this.acceptanceTimestampUtcOffset = acceptanceTimestampUtcOffset;
+    }
 
-	public void setAcceptanceTimestampUtcOffset(LocalDateTime acceptanceTimestampUtcOffset) {
-		this.acceptanceTimestampUtcOffset = acceptanceTimestampUtcOffset;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
-
-
-    
-    
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }

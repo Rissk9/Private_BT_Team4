@@ -27,6 +27,10 @@ public class CustDtl {
     @JoinColumn(name = "CUST_STATUS")
     private CustStsMstr customerStatus;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CSTCL_ID")
+	private CustCl classification;
+
     @Column(name = "CUST_GENDR", length = 20)
     private String gender;
 
@@ -107,6 +111,13 @@ public class CustDtl {
 		this.customerStatus = customerStatus;
 	}
 
+	public CustCl getClassification() {
+		return classification;
+	}
+
+	public void setClassification(CustCl classification) {
+		this.classification = classification;
+	}
 	public String getGender() {
 		return gender;
 	}

@@ -22,42 +22,40 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
 
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
-                )
-            )
+                .sessionManagement(session -> session.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS))
 
-            .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-                // Registration
-                .requestMatchers("/auth/register").permitAll()
+                        // Swagger UI and OpenAPI documentation
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/webjars/**").permitAll()
 
-                // OTP verification
-                .requestMatchers("/auth/verify-otp").permitAll()
+                        // Registration
+                        .requestMatchers("/auth/register").permitAll()
 
-                // Login
-                .requestMatchers("/auth/login").permitAll()
-                
-                //refresh token
-                .requestMatchers("/auth/refresh").permitAll()
-                
-                //forgot password which leads to reset password
-                .requestMatchers("/auth/forgot-password").permitAll()
-                
-                //reset password
-                .requestMatchers("/auth/reset-password").permitAll()
+                        // OTP verification
+                        .requestMatchers("/auth/verify-otp").permitAll()
 
-                // Everything else requires JWT
-                .anyRequest().authenticated()
-            )
+                        // Login
+                        .requestMatchers("/auth/login").permitAll()
 
-            .addFilterBefore(
-                jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
-            );
+                        // refresh token
+                        .requestMatchers("/auth/refresh").permitAll()
+
+                        // forgot password which leads to reset password
+                        .requestMatchers("/auth/forgot-password").permitAll()
+
+                        // reset password
+                        .requestMatchers("/auth/reset-password").permitAll()
+
+                        // Everything else requires JWT
+                        .anyRequest().authenticated())
+
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -55,5 +55,19 @@ public class AuthRole {
     @Column(name = "AUTHROLE_UUID", length = 100)
     private String uuid;
 
-    // Getters and setters
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 }

@@ -41,22 +41,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
 
-            String username =
-                    jwtService.extractUsername(token);
+            String username = jwtService.extractUsername(token);
 
             if (username != null
                     && SecurityContextHolder
-                    .getContext()
-                    .getAuthentication() == null) {
+                            .getContext()
+                            .getAuthentication() == null) {
 
                 if (jwtService.isTokenValid(token, username)) {
 
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    username,
-                                    null,
-                                    Collections.emptyList()
-                            );
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            Collections.emptyList());
 
                     SecurityContextHolder
                             .getContext()
