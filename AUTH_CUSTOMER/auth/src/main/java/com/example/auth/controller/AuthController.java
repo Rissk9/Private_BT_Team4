@@ -38,7 +38,7 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "Invalid request body.")
     })
     public ResponseEntity<String> register(
-            @RequestBody RegisterRequestDto request) {
+            @jakarta.validation.Valid @RequestBody RegisterRequestDto request) {
 
         authService.register(request);
 
@@ -54,7 +54,7 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "Email or phone number is required / Invalid or expired OTP")
     })
     public ResponseEntity<String> verifyOtp(
-            @RequestBody VerifyOtpRequestDto request) {
+            @jakarta.validation.Valid @RequestBody VerifyOtpRequestDto request) {
 
         String identifier;
 
@@ -97,7 +97,7 @@ public class AuthController {
         @ApiResponse(responseCode = "401", description = "Invalid credentials.")
     })
     public ResponseEntity<LoginResponseDto> login(
-            @RequestBody LoginRequestDto request,
+            @jakarta.validation.Valid @RequestBody LoginRequestDto request,
             jakarta.servlet.http.HttpServletRequest httpRequest) {
 
         String ipAddress = httpRequest.getRemoteAddr();
@@ -116,7 +116,7 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "Invalid refresh token.")
     })
     public ResponseEntity<LoginResponseDto> refreshToken(
-            @RequestBody RefreshTokenRequestDto request) {
+            @jakarta.validation.Valid @RequestBody RefreshTokenRequestDto request) {
 
         LoginResponseDto response = authService.refreshToken(request.getRefreshToken());
 
@@ -130,7 +130,7 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "Password reset instructions sent."),
         @ApiResponse(responseCode = "400", description = "Invalid request body.")
     })
-    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequestDto request) {
+    public ResponseEntity<String> forgotPassword(@jakarta.validation.Valid @RequestBody ForgotPasswordRequestDto request) {
 
         authService.forgotPassword(request.getIdentifier());
         return new ResponseEntity<>("Accepted", HttpStatus.OK);
@@ -144,7 +144,7 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "Invalid or expired reset token.")
     })
     public ResponseEntity<String> resetPassword(
-            @RequestBody ResetPasswordRequestDto request) {
+            @jakarta.validation.Valid @RequestBody ResetPasswordRequestDto request) {
 
         authService.resetPassword(request);
 
