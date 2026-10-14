@@ -3,9 +3,9 @@ spring:
     name: demo
 
   datasource:
-    url: jdbc:mysql://localhost:3306/banking_tech2
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/fdmodule
+    username: root
+    password: rish
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -30,3 +30,22 @@ spring:
           starttls:
             enable: true
             required: true
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: fd-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.BankingTech.demo"
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.consumer: WARN
+
+server:
+  port: 8081
+
+  

@@ -2,17 +2,22 @@ package com.example.auth.serviceimpl;
 
 import com.example.auth.dto.CustomerProfileRequestDto;
 import com.example.auth.dto.CustomerProfileResponseDto;
+import com.example.auth.dto.KycCustomerEventDto;
 import com.example.auth.entity.*;
+import com.example.auth.event.KycApprovedEvent;
 import com.example.auth.repository.*;
 import com.example.auth.service.CustomerService;
+import com.example.auth.service.KycEventPublisherService;
 import com.example.auth.util.AuditData;
 import com.example.auth.util.AuditUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.UUID;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -58,6 +63,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private AuditUtil auditUtil;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -169,7 +177,12 @@ public class CustomerServiceImpl implements CustomerService {
 
         custDtlRepository.save(customer);
 
-        // 7. Return Response
+        // 7. Raise an application event so the Kafka publish happens AFTER the
+        // database transaction commits. A failed/rolled-back KYC submission
+        // never reaches this point, so no event is published for it.
+        eventPublisher.publishEvent(new KycApprovedEvent(customer));
+
+        // 8. Return Response
         CustomerProfileResponseDto response = new CustomerProfileResponseDto();
         response.setMessage("Customer KYC completed successfully");
         response.setStatus("ACTIVE");
