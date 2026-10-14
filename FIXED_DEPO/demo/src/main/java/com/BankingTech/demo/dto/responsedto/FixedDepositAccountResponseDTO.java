@@ -1,53 +1,51 @@
+
 package com.BankingTech.demo.dto.responsedto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class FixedDepositAccountResponseDTO {
 
     private String fdAccountNo;
-
     private String customerId;
-
     private String productCode;
-
     private BigDecimal principalAmount;
-
     private BigDecimal interestRate;
-
     private Integer termMonths;
 
+    private LocalDateTime openedAt;
+    private LocalDate maturityDate;
+
     private String status;
-
     private String interestType;
-
     private String interestPayoutType;
-
     private BigDecimal accruedInterest;
-
     private LocalDateTime closedAt;
 
     /*
      * Audit information
      */
     private String crudValue;
-
     private String userId;
-
     private String wsId;
-
     private LocalDateTime hostTs;
-
     private LocalDateTime localTs;
-
     private String ruleSystemId;
-
     private LocalDateTime acptTs;
-
     private String acptTsUtcOfst;
-
     private UUID uuid;
+
+    private String interestFrequency;
+
+    public String getInterestFrequency() {
+        return interestFrequency;
+    }
+
+    public void setInterestFrequency(String interestFrequency) {
+        this.interestFrequency = interestFrequency;
+    }
 
     public String getFdAccountNo() {
         return fdAccountNo;
@@ -95,6 +93,22 @@ public class FixedDepositAccountResponseDTO {
 
     public void setTermMonths(Integer termMonths) {
         this.termMonths = termMonths;
+    }
+
+    public LocalDateTime getOpenedAt() {
+        return openedAt;
+    }
+
+    public void setOpenedAt(LocalDateTime openedAt) {
+        this.openedAt = openedAt;
+    }
+
+    public LocalDate getMaturityDate() {
+        return maturityDate;
+    }
+
+    public void setMaturityDate(LocalDate maturityDate) {
+        this.maturityDate = maturityDate;
     }
 
     public String getStatus() {

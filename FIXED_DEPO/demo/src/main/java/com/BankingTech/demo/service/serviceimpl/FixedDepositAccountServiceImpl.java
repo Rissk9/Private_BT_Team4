@@ -1,3 +1,4 @@
+
 package com.BankingTech.demo.service.serviceimpl;
 
 import com.BankingTech.demo.dto.requestdto.FixedDepositAccountRequestDTO;
@@ -24,9 +25,7 @@ public class FixedDepositAccountServiceImpl
                 implements FixedDepositAccountService {
 
         private final FixedDepositAccountRepository fixedDepositAccountRepository;
-
         private final AccountNumberGenerator accountNumberGenerator;
-
         private final FDTransactionRepository fdTransactionRepository;
 
         public FixedDepositAccountServiceImpl(
@@ -47,60 +46,37 @@ public class FixedDepositAccountServiceImpl
                 String fdAccountNo = accountNumberGenerator.generate(
                                 request.getBranchCode());
 
-                if (fixedDepositAccountRepository
-                                .existsByFdAccountNo(fdAccountNo)) {
-
+                if (fixedDepositAccountRepository.existsByFdAccountNo(fdAccountNo)) {
                         throw new IllegalStateException(
                                         "Generated FD account number already exists");
                 }
 
+                LocalDateTime now = LocalDateTime.now();
+
                 FixedDepositAccountEntity entity = new FixedDepositAccountEntity();
 
                 entity.setFdAccountNo(fdAccountNo);
+                entity.setFdAccountCustomerId(request.getCustomerId());
+                entity.setFdAccountProductCode(request.getProductCode());
+                entity.setFdAccountPrincipal(request.getPrincipalAmount());
+                entity.setFdAccountRate(request.getInterestRate());
+                entity.setFdAccountTerm(request.getTermMonths());
 
-                entity.setFdAccountCustomerId(
-                                request.getCustomerId());
-
-                entity.setFdAccountProductCode(
-                                request.getProductCode());
-
-                entity.setFdAccountPrincipal(
-                                request.getPrincipalAmount());
-
-                entity.setFdAccountRate(
-                                request.getInterestRate());
-
-                entity.setFdAccountTerm(
-                                request.getTermMonths());
+                entity.setFdAccountOpenedAt(now);
+                entity.setFdAccountMaturityDate(
+                                now.toLocalDate().plusMonths(request.getTermMonths()));
 
                 entity.setFdAccountStatus("ACTIVE");
-
-                entity.setFdAccountInterestType(
-                                request.getInterestType());
-
+                entity.setFdAccountInterestType(request.getInterestType());
                 entity.setFdAccountInterestPayoutType(
                                 request.getInterestPayoutType());
 
-                entity.setFdAccountAccruedInterest(
-                                BigDecimal.ZERO);
+                entity.setFdAccountInterestFrequency(
+                                request.getInterestFrequency());
 
-                LocalDateTime now = LocalDateTime.now();
+                entity.setFdAccountAccruedInterest(BigDecimal.ZERO);
 
-                entity.setCrudValue("CREATE");
-                entity.setUserId(request.getCustomerId());
-                entity.setWsId("BANKING_SYSTEM");
-                entity.setHostTs(now);
-                entity.setLocalTs(now);
-                entity.setRuleSystemId("FD_ACCOUNT");
-                entity.setAcptTs(now);
-
-                entity.setAcptTsUtcOfst(
-                                ZoneOffset.systemDefault()
-                                                .getRules()
-                                                .getOffset(now)
-                                                .toString());
-
-                entity.setUuid(UUID.randomUUID());
+                setAccountAuditFields(entity, request.getCustomerId(), now);
 
                 FixedDepositAccountEntity saved = fixedDepositAccountRepository.save(entity);
 
@@ -117,111 +93,60 @@ public class FixedDepositAccountServiceImpl
         public FDAccountCreationResponseDTO createAccountWithTransaction(
                         FixedDepositAccountRequestDTO request) {
 
-                /*
-                 * 1. Generate FD account number.
-                 */
+                // 1. Generate FD account number.
                 String fdAccountNo = accountNumberGenerator.generate(
                                 request.getBranchCode());
 
-                /*
-                 * 2. Check whether generated account number
-                 * already exists.
-                 */
-                if (fixedDepositAccountRepository
-                                .existsByFdAccountNo(fdAccountNo)) {
-
+                // 2. Check whether generated account number already exists.
+                if (fixedDepositAccountRepository.existsByFdAccountNo(fdAccountNo)) {
                         throw new IllegalStateException(
                                         "Generated FD account number already exists");
                 }
 
-                /*
-                 * 3. Create FD account.
-                 */
+                LocalDateTime now = LocalDateTime.now();
+
+                // 3. Create FD account.
                 FixedDepositAccountEntity entity = new FixedDepositAccountEntity();
 
                 entity.setFdAccountNo(fdAccountNo);
+                entity.setFdAccountCustomerId(request.getCustomerId());
+                entity.setFdAccountProductCode(request.getProductCode());
+                entity.setFdAccountPrincipal(request.getPrincipalAmount());
+                entity.setFdAccountRate(request.getInterestRate());
+                entity.setFdAccountTerm(request.getTermMonths());
 
-                entity.setFdAccountCustomerId(
-                                request.getCustomerId());
-
-                entity.setFdAccountProductCode(
-                                request.getProductCode());
-
-                entity.setFdAccountPrincipal(
-                                request.getPrincipalAmount());
-
-                entity.setFdAccountRate(
-                                request.getInterestRate());
-
-                entity.setFdAccountTerm(
-                                request.getTermMonths());
+                entity.setFdAccountOpenedAt(now);
+                entity.setFdAccountMaturityDate(
+                                now.toLocalDate().plusMonths(request.getTermMonths()));
 
                 entity.setFdAccountStatus("ACTIVE");
-
-                entity.setFdAccountInterestType(
-                                request.getInterestType());
-
+                entity.setFdAccountInterestType(request.getInterestType());
                 entity.setFdAccountInterestPayoutType(
                                 request.getInterestPayoutType());
 
-                entity.setFdAccountAccruedInterest(
-                                BigDecimal.ZERO);
+                entity.setFdAccountInterestFrequency(
+                                request.getInterestFrequency());
 
-                /*
-                 * 4. Set audit fields for FD account.
-                 */
-                LocalDateTime now = LocalDateTime.now();
+                entity.setFdAccountAccruedInterest(BigDecimal.ZERO);
 
-                entity.setCrudValue("CREATE");
-                entity.setUserId(request.getCustomerId());
-                entity.setWsId("BANKING_SYSTEM");
-                entity.setHostTs(now);
-                entity.setLocalTs(now);
-                entity.setRuleSystemId("FD_ACCOUNT");
-                entity.setAcptTs(now);
+                // 4. Set audit fields for FD account.
+                setAccountAuditFields(entity, request.getCustomerId(), now);
 
-                entity.setAcptTsUtcOfst(
-                                ZoneOffset.systemDefault()
-                                                .getRules()
-                                                .getOffset(now)
-                                                .toString());
-
-                entity.setUuid(UUID.randomUUID());
-
-                /*
-                 * 5. Save FD account.
-                 */
+                // 5. Save FD account.
                 fixedDepositAccountRepository.save(entity);
 
-                /*
-                 * 6. Create initial DEPOSIT transaction.
-                 */
+                // 6. Create initial DEPOSIT transaction.
                 FDTransactionEntity transaction = new FDTransactionEntity();
 
-                transaction.setFdTransactionId(
-                                generateTransactionId());
+                transaction.setFdTransactionId(generateTransactionId());
+                transaction.setFdTransactionFdAccountNo(fdAccountNo);
+                transaction.setFdTransactionTxnType("DEPOSIT");
+                transaction.setFdTransactionAmount(request.getPrincipalAmount());
+                transaction.setFdTransactionPenaltyAmount(BigDecimal.ZERO);
+                transaction.setFdTransactionTxnDate(now);
+                transaction.setFdTransactionRemarks("Initial Deposit");
 
-                transaction.setFdTransactionFdAccountNo(
-                                fdAccountNo);
-
-                transaction.setFdTransactionTxnType(
-                                "DEPOSIT");
-
-                transaction.setFdTransactionAmount(
-                                request.getPrincipalAmount());
-
-                transaction.setFdTransactionPenaltyAmount(
-                                BigDecimal.ZERO);
-
-                transaction.setFdTransactionTxnDate(
-                                now);
-
-                transaction.setFdTransactionRemarks(
-                                "Initial Deposit");
-
-                /*
-                 * 7. Set audit fields for transaction.
-                 */
+                // 7. Set audit fields for transaction.
                 transaction.setCrudValue("CREATE");
                 transaction.setUserId(request.getCustomerId());
                 transaction.setWsId("BANKING_SYSTEM");
@@ -229,41 +154,54 @@ public class FixedDepositAccountServiceImpl
                 transaction.setLocalTs(now);
                 transaction.setRuleSystemId("FD_TRANSACTION");
                 transaction.setAcptTs(now);
-
                 transaction.setAcptTsUtcOfst(
                                 ZoneOffset.systemDefault()
                                                 .getRules()
                                                 .getOffset(now)
                                                 .toString());
-
                 transaction.setUuid(UUID.randomUUID());
 
-                /*
-                 * 8. Save initial DEPOSIT transaction.
-                 */
+                // 8. Save initial DEPOSIT transaction.
                 FDTransactionEntity savedTransaction = fdTransactionRepository.save(transaction);
 
-                /*
-                 * 9. Build L16 response.
-                 */
+                // 9. Build L16 response.
                 FDAccountCreationResponseDTO response = new FDAccountCreationResponseDTO();
 
                 response.setFdAccountNo(fdAccountNo);
-
                 response.setInitialTransactionId(
                                 savedTransaction.getFdTransactionId());
-
-                response.setMessage(
-                                "Account and initial deposit created.");
+                response.setMessage("Account and initial deposit created.");
 
                 return response;
+        }
+
+        /*
+         * Sets audit fields for an FD account.
+         */
+        private void setAccountAuditFields(
+                        FixedDepositAccountEntity entity,
+                        String customerId,
+                        LocalDateTime now) {
+
+                entity.setCrudValue("CREATE");
+                entity.setUserId(customerId);
+                entity.setWsId("BANKING_SYSTEM");
+                entity.setHostTs(now);
+                entity.setLocalTs(now);
+                entity.setRuleSystemId("FD_ACCOUNT");
+                entity.setAcptTs(now);
+                entity.setAcptTsUtcOfst(
+                                ZoneOffset.systemDefault()
+                                                .getRules()
+                                                .getOffset(now)
+                                                .toString());
+                entity.setUuid(UUID.randomUUID());
         }
 
         /*
          * Generate unique transaction ID.
          */
         private String generateTransactionId() {
-
                 return "FDT-"
                                 + UUID.randomUUID()
                                                 .toString()
@@ -274,15 +212,11 @@ public class FixedDepositAccountServiceImpl
 
         @Override
         @Transactional(readOnly = true)
-        public FixedDepositAccountResponseDTO getAccount(
-                        String fdAccountNo) {
+        public FixedDepositAccountResponseDTO getAccount(String fdAccountNo) {
 
-                FixedDepositAccountEntity entity = fixedDepositAccountRepository
-                                .findByFdAccountNo(fdAccountNo)
-                                .orElseThrow(
-                                                () -> new RuntimeException(
-                                                                "FD account not found: "
-                                                                                + fdAccountNo));
+                FixedDepositAccountEntity entity = fixedDepositAccountRepository.findByFdAccountNo(fdAccountNo)
+                                .orElseThrow(() -> new RuntimeException(
+                                                "FD account not found: " + fdAccountNo));
 
                 return convertToResponseDTO(entity);
         }
@@ -319,8 +253,7 @@ public class FixedDepositAccountServiceImpl
 
                 return fixedDepositAccountRepository
                                 .findByFdAccountCustomerIdAndFdAccountStatus(
-                                                customerId,
-                                                status)
+                                                customerId, status)
                                 .stream()
                                 .map(this::convertToResponseDTO)
                                 .toList();
@@ -331,65 +264,35 @@ public class FixedDepositAccountServiceImpl
 
                 FixedDepositAccountResponseDTO response = new FixedDepositAccountResponseDTO();
 
-                response.setFdAccountNo(
-                                entity.getFdAccountNo());
+                response.setFdAccountNo(entity.getFdAccountNo());
+                response.setCustomerId(entity.getFdAccountCustomerId());
+                response.setProductCode(entity.getFdAccountProductCode());
+                response.setPrincipalAmount(entity.getFdAccountPrincipal());
+                response.setInterestRate(entity.getFdAccountRate());
+                response.setTermMonths(entity.getFdAccountTerm());
 
-                response.setCustomerId(
-                                entity.getFdAccountCustomerId());
+                response.setOpenedAt(entity.getFdAccountOpenedAt());
+                response.setMaturityDate(entity.getFdAccountMaturityDate());
 
-                response.setProductCode(
-                                entity.getFdAccountProductCode());
-
-                response.setPrincipalAmount(
-                                entity.getFdAccountPrincipal());
-
-                response.setInterestRate(
-                                entity.getFdAccountRate());
-
-                response.setTermMonths(
-                                entity.getFdAccountTerm());
-
-                response.setStatus(
-                                entity.getFdAccountStatus());
-
-                response.setInterestType(
-                                entity.getFdAccountInterestType());
-
+                response.setStatus(entity.getFdAccountStatus());
+                response.setInterestType(entity.getFdAccountInterestType());
                 response.setInterestPayoutType(
                                 entity.getFdAccountInterestPayoutType());
 
-                response.setAccruedInterest(
-                                entity.getFdAccountAccruedInterest());
+                response.setInterestFrequency(
+                                entity.getFdAccountInterestFrequency());
+                response.setAccruedInterest(entity.getFdAccountAccruedInterest());
+                response.setClosedAt(entity.getFdAccountClosedAt());
 
-                response.setClosedAt(
-                                entity.getFdAccountClosedAt());
-
-                response.setCrudValue(
-                                entity.getCrudValue());
-
-                response.setUserId(
-                                entity.getUserId());
-
-                response.setWsId(
-                                entity.getWsId());
-
-                response.setHostTs(
-                                entity.getHostTs());
-
-                response.setLocalTs(
-                                entity.getLocalTs());
-
-                response.setRuleSystemId(
-                                entity.getRuleSystemId());
-
-                response.setAcptTs(
-                                entity.getAcptTs());
-
-                response.setAcptTsUtcOfst(
-                                entity.getAcptTsUtcOfst());
-
-                response.setUuid(
-                                entity.getUuid());
+                response.setCrudValue(entity.getCrudValue());
+                response.setUserId(entity.getUserId());
+                response.setWsId(entity.getWsId());
+                response.setHostTs(entity.getHostTs());
+                response.setLocalTs(entity.getLocalTs());
+                response.setRuleSystemId(entity.getRuleSystemId());
+                response.setAcptTs(entity.getAcptTs());
+                response.setAcptTsUtcOfst(entity.getAcptTsUtcOfst());
+                response.setUuid(entity.getUuid());
 
                 return response;
         }

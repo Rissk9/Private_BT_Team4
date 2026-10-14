@@ -49,6 +49,16 @@ public class FixedDepositAccountRequestDTO {
     @NotBlank(message = "Interest payout type is required")
     private String interestPayoutType;
 
+    private String interestFrequency;
+
+    public String getInterestFrequency() {
+        return interestFrequency;
+    }
+
+    public void setInterestFrequency(String interestFrequency) {
+        this.interestFrequency = interestFrequency;
+    }
+
     public String getCustomerId() {
         return customerId;
     }
